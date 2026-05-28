@@ -7,6 +7,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  VITE_API_URL = "https://breathe-esg-api-7hkx.onrender.com"
 
 # SPA: React Router client-side routes
 [[redirects]]
