@@ -48,3 +48,4 @@ Quick path:
 1. Push repo to GitHub
 2. Render → **New Blueprint** → select repo (`render.yaml` included)
 3. Open frontend URL and login with `admin` / `admin123` (after seed runs)
+# SAP
