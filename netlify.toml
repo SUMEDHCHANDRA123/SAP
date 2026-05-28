@@ -1,0 +1,15 @@
+# Netlify: React frontend only. Deploy the Django API separately (see DEPLOYMENT_NETLIFY.md).
+
+[build]
+  base = "breathe_esg_frontend"
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA: React Router client-side routes
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
