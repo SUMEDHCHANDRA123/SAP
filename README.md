@@ -42,10 +42,14 @@ npm run dev
 
 ## Deployment
 
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for full Render deployment steps (Blueprint + env vars + login).
+| Guide | Stack |
+|-------|--------|
+| **[DEPLOYMENT_NETLIFY.md](DEPLOYMENT_NETLIFY.md)** | Frontend on **Netlify** + API on **Render** |
+| **[DEPLOYMENT.md](DEPLOYMENT.md)** | Everything on **Render** (Blueprint) |
 
-Quick path:
-1. Push repo to GitHub
-2. Render → **New Blueprint** → select repo (`render.yaml` included)
-3. Open frontend URL and login with `admin` / `admin123` (after seed runs)
+Netlify quick path:
+1. Deploy API with Render Blueprint (`render.yaml`) — API, worker, Postgres, Redis
+2. Netlify → import GitHub repo (`netlify.toml` configures the build)
+3. Set `VITE_API_URL` to your Render API URL; add Netlify URL to Render `CORS_ALLOWED_ORIGINS` / `CSRF_TRUSTED_ORIGINS`
+4. Login with `admin` / `admin123` (after `RUN_SEED=true` on first API deploy)
 # SAP
