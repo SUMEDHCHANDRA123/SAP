@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+.env
+.venv/
+venv/
+
+# Node / frontend
+breathe_esg_frontend/node_modules/
+breathe_esg_frontend/dist/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+

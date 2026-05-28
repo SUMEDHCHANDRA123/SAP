@@ -1,0 +1,16 @@
+trip_id,traveler_name,employee_id,travel_date,origin,destination,category,carrier,class_of_service,distance_km,nights,cost_usd,department,purpose
+TRP-1001,Aisha Patel,EMP-2201,2024-04-02,BOM,DEL,Flight,Air India,Economy,1148,0,8500,Sales,Client meeting - Delhi HQ
+TRP-1002,Aisha Patel,EMP-2201,2024-04-04,DEL,BOM,Flight,Air India,Economy,1148,0,8200,Sales,Return - Client meeting
+TRP-1003,Aisha Patel,EMP-2201,2024-04-02,Delhi,Hotel,Hotel,Marriott New Delhi,,0,3,12400,Sales,Client meeting - Delhi HQ
+TRP-1004,Rahul Mehra,EMP-1105,2024-04-08,BOM,LHR,Flight,British Airways,Business,9360,0,95000,Leadership,Board meeting London
+TRP-1005,Rahul Mehra,EMP-1105,2024-04-12,LHR,BOM,Flight,British Airways,Business,9360,0,93000,Leadership,Return - Board meeting
+TRP-1006,Rahul Mehra,EMP-1105,2024-04-08,London,Hotel,Hotel,Hilton London,,0,4,38000,Leadership,Board meeting London
+TRP-1007,Sneha Rao,EMP-3312,2024-04-10,BOM,SIN,Flight,Singapore Airlines,Economy,6303,0,22000,Engineering,Tech conference
+TRP-1008,Sneha Rao,EMP-3312,2024-04-10,Singapore,Hotel,Hotel,Novotel Singapore,,0,3,18500,Engineering,Tech conference
+TRP-1009,Sneha Rao,EMP-3312,2024-04-13,SIN,BOM,Flight,Singapore Airlines,Economy,6303,0,21500,Engineering,Return - Tech conference
+TRP-1010,Vikram Shah,EMP-0892,2024-04-15,Mumbai,Pune,Ground,Ola Cab,,,0,1800,Operations,Site visit Pune plant
+TRP-1011,Vikram Shah,EMP-0892,2024-04-15,Pune,Mumbai,Ground,Ola Cab,,,0,1750,Operations,Return - Site visit
+TRP-1012,Priya Nair,EMP-4421,2024-04-18,BOM,MAA,Flight,IndiGo,Economy,,0,5600,HR,Recruitment drive Chennai
+TRP-1013,Priya Nair,EMP-4421,2024-04-18,Chennai,Hotel,Hotel,Taj Chennai,,0,2,9800,HR,Recruitment drive Chennai
+TRP-1014,Priya Nair,EMP-4421,2024-04-20,MAA,BOM,Flight,IndiGo,Economy,,0,5400,HR,Return - Recruitment drive
+TRP-1015,James Okafor,EMP-5503,2024-04-22,LHR,JFK,Flight,American Airlines,Economy,,0,68000,Partnerships,NYC partner summit

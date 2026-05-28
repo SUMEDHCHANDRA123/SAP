@@ -1,0 +1,105 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Deploy: Render Dashboard -> New -> Blueprint -> connect this repo
+
+databases:
+  - name: breathe-esg-db
+    plan: free
+    databaseName: breathe_esg
+    user: breathe_esg
+
+services:
+  - type: redis
+    name: breathe-esg-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
+  - type: web
+    name: breathe-esg-api
+    runtime: python
+    plan: free
+    buildCommand: ./scripts/render_build.sh
+    startCommand: ./scripts/render_start.sh
+    healthCheckPath: /api/auth/me/
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.3"
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: breathe-esg-db
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: breathe-esg-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: breathe-esg-redis
+          property: connectionString
+      - key: CELERY_TASK_ALWAYS_EAGER
+        value: "false"
+      - key: CROSS_SITE_COOKIES
+        value: "true"
+      - key: RUN_SEED
+        value: "true"
+      - key: CORS_ALLOWED_ORIGINS
+        fromService:
+          type: web
+          name: breathe-esg-frontend
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: CSRF_TRUSTED_ORIGINS
+        fromService:
+          type: web
+          name: breathe-esg-frontend
+          envVarKey: RENDER_EXTERNAL_URL
+
+  - type: worker
+    name: breathe-esg-worker
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: ./scripts/celery_worker.sh
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.3"
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: DJANGO_SECRET_KEY
+        fromService:
+          type: web
+          name: breathe-esg-api
+          envVarKey: DJANGO_SECRET_KEY
+      - key: DATABASE_URL
+        fromDatabase:
+          name: breathe-esg-db
+          property: connectionString
+      - key: CELERY_BROKER_URL
+        fromService:
+          type: redis
+          name: breathe-esg-redis
+          property: connectionString
+      - key: CELERY_RESULT_BACKEND
+        fromService:
+          type: redis
+          name: breathe-esg-redis
+          property: connectionString
+      - key: CELERY_TASK_ALWAYS_EAGER
+        value: "false"
+
+  - type: web
+    name: breathe-esg-frontend
+    runtime: static
+    buildCommand: cd breathe_esg_frontend && npm install --legacy-peer-deps && npm run build
+    staticPublishPath: breathe_esg_frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: breathe-esg-api
+          envVarKey: RENDER_EXTERNAL_URL
