@@ -111,8 +111,8 @@ def _require_platform_admin(request):
 class AuthMeView(APIView):
     authentication_classes = [SessionAuthentication]
 
-    @method_decorator(csrf_exempt)
     def post(self, request):
+        """Login endpoint. Requires CSRF token for security."""
         username = (request.data or {}).get("username", "").strip()
         password = (request.data or {}).get("password", "")
         if not username or not password:
@@ -139,6 +139,7 @@ class AuthMeView(APIView):
 
     @method_decorator(ensure_csrf_cookie)
     def get(self, request):
+        """Get current user info and ensure CSRF cookie is set."""
         user = getattr(request, "user", None)
         if not user or not user.is_authenticated:
             return Response(
@@ -168,8 +169,8 @@ class AuthMeView(APIView):
             }
         )
 
-    @method_decorator(csrf_exempt)
     def delete(self, request):
+        """Logout endpoint. Requires CSRF token for security."""
         logout(request)
         if hasattr(request, "session"):
             request.session.flush()
@@ -179,8 +180,8 @@ class AuthMeView(APIView):
 class AuthRegisterView(APIView):
     authentication_classes = []
 
-    @method_decorator(csrf_exempt)
     def post(self, request):
+        """Registration endpoint. Requires CSRF token for security."""
         username = (request.data or {}).get("username", "").strip()
         password = (request.data or {}).get("password", "")
         if not username or not password:

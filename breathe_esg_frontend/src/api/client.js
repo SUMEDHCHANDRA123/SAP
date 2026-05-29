@@ -6,6 +6,7 @@ const baseURL = import.meta.env.DEV
   : import.meta.env.VITE_API_URL || "http://localhost:8000";
 const tenantIdFromEnv = import.meta.env.VITE_TENANT_ID;
 const TENANT_STORAGE_KEY = "breatheTenantId";
+const CSRF_STORAGE_KEY = "csrfToken";
 
 export const api = axios.create({
   baseURL,
@@ -24,8 +25,42 @@ export const getActiveTenantId = () =>
   localStorage.getItem(TENANT_STORAGE_KEY) || tenantIdFromEnv || null;
 
 function getCsrfToken() {
+  // Try localStorage first (cached from previous fetch)
+  const cached = localStorage.getItem(CSRF_STORAGE_KEY);
+  if (cached) return cached;
+
+  // Fall back to cookie
   const match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : null;
+}
+
+function setCsrfToken(token) {
+  if (token) {
+    localStorage.setItem(CSRF_STORAGE_KEY, token);
+  } else {
+    localStorage.removeItem(CSRF_STORAGE_KEY);
+  }
+}
+
+// Fetch CSRF token from backend and cache it
+export async function fetchCsrfToken() {
+  try {
+    const response = await axios.get(`${baseURL}/api/auth/me/`, {
+      withCredentials: true,
+    });
+    // Django sets the CSRF cookie via ensure_csrf_cookie decorator
+    // Extract from the response cookie
+    const match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
+    if (match) {
+      const token = decodeURIComponent(match[1]);
+      setCsrfToken(token);
+      return token;
+    }
+    return null;
+  } catch (error) {
+    // If fetch fails, try to use cached token
+    return getCsrfToken();
+  }
 }
 
 api.interceptors.request.use((config) => {
@@ -49,10 +84,16 @@ api.interceptors.request.use((config) => {
 export const getRecords = (params) => api.get("/api/records/", { params });
 export const getTenants = () => api.get("/api/tenants/");
 export const authMe = () => api.get("/api/auth/me/");
-export const loginSession = (username, password) =>
-  api.post("/api/auth/me/", { username, password });
-export const registerUser = (username, password) =>
-  api.post("/api/auth/register/", { username, password });
+export const loginSession = async (username, password) => {
+  // Ensure CSRF token is available before login
+  await fetchCsrfToken();
+  return api.post("/api/auth/me/", { username, password });
+};
+export const registerUser = async (username, password) => {
+  // Ensure CSRF token is available before registration
+  await fetchCsrfToken();
+  return api.post("/api/auth/register/", { username, password });
+};
 export const logoutSession = () => api.delete("/api/auth/me/");
 export const getPendingUsers = () => api.get("/api/admin/users/pending/");
 export const approveUser = (userId, payload) =>
